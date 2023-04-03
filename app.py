@@ -7,7 +7,7 @@ import openai
 import streamlit as st
 
 
-openai.api_key = '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'
+openai.api_key = "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"
 
 
 example_destinations = ['Paris', 'London', 'New York', 'Tokyo', 'Sydney', 'Hong Kong', 'Singapore', 'Warsaw', 'Mexico City', 'Palermo']
