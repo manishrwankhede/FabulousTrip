@@ -7,7 +7,7 @@ import openai
 import streamlit as st
 
 
-openai.api_key = os.getenv('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')
+openai.api_key = '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'
 
 
 example_destinations = ['Paris', 'London', 'New York', 'Tokyo', 'Sydney', 'Hong Kong', 'Singapore', 'Warsaw', 'Mexico City', 'Palermo']
@@ -22,25 +22,23 @@ now_date = now_date.replace(minute=now_date.minute // 15 * 15, second=0, microse
 now_time = now_date.time()
 now_date = now_date.date() + timedelta(days=1)
 
-def generate_prompt(destination, arrival_to, arrival_date, arrival_time, departure_from, departure_date, departure_time, additional_information, **kwargs):
+def generate_prompt(destination, arrival_date, departure_date,departure_time,arrival_time,**kwargs):
     return f'''
-Prepare trip schedule for {destination}, based on the following information:
+*Think like 20 years experience trip advisor and prepare the trip schedule for the {destination} most rated famous place considering arrival time as {arrival_time} and  and departure time as {departure_time} strictly and Use the example format: always keep day in next row, cover as many places as possible,keep the same format for output:
+*Arrival Date: {arrival_date}
+*Departure Date: {departure_date}
 
-* Arrival To: {arrival_to}
-* Arrival Date: {arrival_date}
-* Arrival Time: {arrival_time}
 
-* Departure From: {departure_from}
-* Departure Date: {departure_date}
-* Departure Time: {departure_time}
-
-* Additional Notes: {additional_information}
+Example:
+[Day]: Morning– Start the day with Dolphin Sight Seeing Tour from Panaji jetty, Visit Dona Paula Jetty , Miramar beach & Shopping Malls of Panaji city. 
+Afternoon: Lunch break at [give 3 Close by good rating economical hotel names for lunch near to last place in morning schedule] near Miramar beach or Dona Paula Jetty Area 
+Evening: Spend time exploring Old Goa Churches like Se Cathedral, Basilica of Bom Jesus. take a dinner at [give 3 close by good rating economical hotels for dinner near to last visit place in the evening] near Basilica of bom Jesus. 
 '''.strip()
 
 
 def submit():    
     prompt = generate_prompt(**st.session_state)
-
+    print(prompt)
     # generate output
     output = openai.Completion.create(
         engine='text-davinci-003',
@@ -53,6 +51,8 @@ def submit():
     )
     
     st.session_state['output'] = output['choices'][0]['text']
+    #response = output['choices'][0]['text']
+    #print(response)
     
 # Initialization
 if 'output' not in st.session_state:
@@ -72,19 +72,14 @@ with st.form(key='trip_form'):
 
     with c2:
         st.subheader('Arrival')
-
-        st.selectbox('Arrival To', ('Airport', 'Train Station', 'Bus Station', 'Ferry Terminal', 'Port', 'Other'), key='arrival_to')
         st.date_input('Arrival Date', value=now_date, key='arrival_date')
         st.time_input('Arrival Time', value=now_time, key='arrival_time')
 
     with c3:
         st.subheader('Departure')
-
-        st.selectbox('Departure From', ('Airport', 'Train Station', 'Bus Station', 'Ferry Terminal', 'Port', 'Other'), key='departure_from')
         st.date_input('Departure Date', value=now_date + timedelta(days=1), key='departure_date')
         st.time_input('Departure Time', value=now_time, key='departure_time')
 
-    st.text_area('Additional Information', height=200, value='I want to visit as many places as possible! (respect time)', key='additional_information')
     
 st.subheader('Trip Schedule')
 st.write(st.session_state.output)
