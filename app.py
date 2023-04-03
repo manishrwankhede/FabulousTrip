@@ -7,7 +7,7 @@ import openai
 import streamlit as st
 
 
-openai.api_key = st.secrets["api_secret"]
+openai.api_key = st.secrets["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"]
 
 
 example_destinations = ['Paris', 'London', 'New York', 'Tokyo', 'Sydney', 'Hong Kong', 'Singapore', 'Warsaw', 'Mexico City', 'Palermo']
